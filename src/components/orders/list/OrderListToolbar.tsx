@@ -8,7 +8,6 @@ import OrderStatusFilter from "./OrderStatusFilter"
 import OrderListActions from "./OrderListActions"
 import { OrderRegionFilter } from "./OrderRegionFilter"
 import { OrderPaymentStatusFilter } from "./OrderPaymentStatusFilter"
-// import { OrderDirectionFilter } from "./OrderDirectionFilter"
 import ProtectedContent from "@/components/auth/ProtectedContent"
 import { appPermissions } from "config/app-permissions.config"
 
@@ -34,7 +33,6 @@ const OrderListToolbar: FC<OrderListToolbarProps> = ({
           <Stack direction="row">
             <OrderRegionFilter value={queryParams["xp.Catalogue"]} onChange={updateQuery("region", true)} />
             <OrderPaymentStatusFilter value={queryParams["xp.PaymentStatus"]} onChange={updateQuery("paymentStatus", true)} />
-            {/* <OrderDirectionFilter value={routeParams["Direction"]} onChange={updateQuery("d", true)} /> */}
             <OrderStatusFilter value={filterParams["Status"]} onChange={updateQuery("status", true)} />
             <OrderListActions />
           </Stack>

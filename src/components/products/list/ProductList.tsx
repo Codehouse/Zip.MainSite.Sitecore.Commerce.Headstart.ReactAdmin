@@ -78,7 +78,6 @@ const ImageColumn: DataTableColumn<IProduct> = {
   )
 }
 
-
 const NameColumn: DataTableColumn<IProduct> = {
   header: "Product Name",
   accessor: "Name",
