@@ -1,14 +1,15 @@
-import {Button, Flex, HStack, SimpleGrid} from "@chakra-ui/react"
+import { Button, Flex, HStack, SimpleGrid } from "@chakra-ui/react"
 import Link from "next/link"
 // import Link from "../../navigation/Link"
-import {FC} from "react"
+import { FC } from "react"
 import DebouncedSearchInput from "../../shared/DebouncedSearchInput/DebouncedSearchInput"
-import {ListViewChildrenProps} from "../../shared/ListView/ListView"
+import { ListViewChildrenProps } from "../../shared/ListView/ListView"
 import ListViewMetaInfo from "../../shared/ListViewMetaInfo/ListViewMetaInfo"
 import ProductListActions from "./ProductListActions"
-import ProductStatusFilter from "./ProductStatusFilter"
+import ProductRegionFilter from "./ProductRegionFilter"
+import ProductCategoryFilter from "./ProductCategoryFilter"
 import ProtectedContent from "@/components/auth/ProtectedContent"
-import {appPermissions} from "config/app-permissions.config"
+import { appPermissions } from "config/app-permissions.config"
 
 interface ProductListToolbarProps extends Omit<ListViewChildrenProps, "renderContent"> {
   onBulkPromote: () => void
@@ -35,8 +36,10 @@ const ProductListToolbar: FC<ProductListToolbarProps> = ({
       gap={2}
     >
       <DebouncedSearchInput label="Search products" value={queryParams["Search"]} onSearch={updateQuery("s", true)} />
-      <SimpleGrid gridTemplateColumns={"1fr 1fr"} gap={2} alignItems={"stretch"}>
-        <ProductStatusFilter value={filterParams["Active"]} onChange={updateQuery("active", true)} />
+      <SimpleGrid gridTemplateColumns={"1fr 1fr 1fr"} gap={2} alignItems={"stretch"}>
+        <ProductRegionFilter value={filterParams["xp.Catalogue"]} onChange={updateQuery("region", true)} />
+        <ProductCategoryFilter value={filterParams["xp.Category"]} onChange={updateQuery("category", true)} />
+        {/* <ProductStatusFilter value={filterParams["Active"]} onChange={updateQuery("active", true)} /> */}
         <ProductListActions selected={selected} onBulkPromote={onBulkPromote} onBulkEdit={onBulkEdit} />
       </SimpleGrid>
       <HStack ml="auto">

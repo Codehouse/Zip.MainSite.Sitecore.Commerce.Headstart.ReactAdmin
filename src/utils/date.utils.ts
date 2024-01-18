@@ -1,9 +1,10 @@
-import {format} from "date-fns"
+import { format } from "date-fns"
 
 export const dateHelper = {
   formatDate,
   formatCreditCardDate,
-  formatShortDate
+  formatShortDate,
+  customFormatDate
 }
 
 /**
@@ -55,5 +56,18 @@ function formatCreditCardDate(isoDateString: string) {
   }
   const date = new Date(isoDateString)
   const formattedDate = format(date, "MM/yy")
+  return formattedDate
+}
+
+/**
+ * Formats an iso date (such as one from OrderCloud)
+ * to a user provided format
+ */
+function customFormatDate(isoDateString: string, customFormat: string) {
+  if (!isoDateString) {
+    return
+  }
+  const date = new Date(isoDateString)
+  const formattedDate = format(date, customFormat)
   return formattedDate
 }
