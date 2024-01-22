@@ -30,8 +30,8 @@ const OrderQueryMap = {
   sort: "SortBy",
   p: "Page",
   region: "xp.Catalogue",
-  paymentStatus: "xp.PaymentStatus",
-  dateRange: "dateRange"
+  fromDate: "FromDate",
+  paymentStatus: "xp.PaymentStatus"
 }
 
 const OrderFilterMap = {
