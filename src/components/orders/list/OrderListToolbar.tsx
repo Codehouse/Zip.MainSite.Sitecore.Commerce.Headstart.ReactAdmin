@@ -26,6 +26,7 @@ const OrderListToolbar: FC<OrderListToolbarProps> = ({
   routeParams,
   selected
 }) => {
+
   return (
     <>
       <Stack direction="row" mb={5}>
@@ -33,7 +34,7 @@ const OrderListToolbar: FC<OrderListToolbarProps> = ({
           <DebouncedSearchInput label="Search orders" value={queryParams["Search"]} onSearch={updateQuery("s", true)} />
           <Stack direction="row">
             <OrderRegionFilter value={queryParams["xp.Catalogue"]} onChange={updateQuery("region", true)} />
-            <OrderDateRangeFilter value={queryParams["FromDate"]} onChange={updateQuery("fromDate", true)} />
+            <OrderDateRangeFilter fromValue={queryParams["From"]} toValue={queryParams["To"]} rangeValue={queryParams["DateRange"]} onChange={updateQuery("dateRange", true)} updateQuery={updateQuery} />
             <OrderPaymentStatusFilter value={queryParams["xp.PaymentStatus"]} onChange={updateQuery("paymentStatus", true)} />
             <OrderStatusFilter value={filterParams["Status"]} onChange={updateQuery("status", true)} />
             <OrderListActions />

@@ -1,32 +1,71 @@
 import { ChevronDownIcon } from "@chakra-ui/icons"
-import { Button, HStack, Menu, MenuButton, MenuItemOption, MenuList, MenuOptionGroup, Tag, Text } from "@chakra-ui/react"
-import { FC } from "react"
+import { Button, HStack, Menu, MenuButton, MenuItemOption, MenuItemOptionProps, MenuList, MenuOptionGroup, Skeleton, Tag, Text } from "@chakra-ui/react"
+import { el } from "date-fns/locale"
+import { debounce, isEmpty } from "lodash"
+import { Categories } from "ordercloud-javascript-sdk"
+import { FC, useEffect, useMemo, useState } from "react"
+import { ICategory } from "types/ordercloud/ICategoryXp"
 
 interface IProductCategoryFilter {
     value: any
+    catalogId: any
     onChange: (newValue: any) => void
 }
 
-const ProductCategoryFilter: FC<IProductCategoryFilter> = ({ value, onChange }) => {
+interface IOptions {
+    id: string;
+    name: string;
+}
+
+const ProductCategoryFilter: FC<IProductCategoryFilter> = ({ value, catalogId, onChange }) => {
+
+    const [options, setOptions] = useState<IOptions[]>([])
+    const [loading, setLoading] = useState(true)
+
+    const loadCatalogs = useMemo(
+        () =>
+            debounce(async () => {
+                try {
+                    setLoading(true)
+                    if (catalogId != undefined && !isEmpty(catalogId)) {
+                        const allCatalogs = await Categories.List<ICategory>(catalogId)
+                        setOptions(allCatalogs.Items.map((catalog) => ({ id: catalog.ID, name: catalog.Name })))
+                    }
+                    else {
+                        setOptions([])
+                    }
+                } finally {
+                    setLoading(false)
+                }
+            }, 500),
+        [catalogId]
+    )
+
+    useEffect(() => {
+        loadCatalogs()
+    }, [loadCatalogs])
+
     return (
         <Menu>
             <MenuButton as={Button} variant="outline">
                 <HStack alignContent="center" h="100%">
                     <Text>Category</Text>
-                    <Tag colorScheme="default">{value && value.length ? value : "Any"}</Tag>
-                    <ChevronDownIcon />
+                    <Skeleton isLoaded={!loading}>
+                        <Tag colorScheme="default">{value && value.length ? value : "Any"}</Tag>
+                        <ChevronDownIcon />
+                    </Skeleton>
                 </HStack>
             </MenuButton>
             <MenuList>
                 <MenuOptionGroup defaultValue={value} title="Filter by category" type="radio" onChange={onChange}>
-                    <MenuItemOption value={""}>Any</MenuItemOption>
-                    <MenuItemOption value="Uk Site>Chilled Water">Chilled Water</MenuItemOption>
-                    <MenuItemOption value="Uk Site>Filters and CO2 Cartridges">Filters and CO2 Cartridges</MenuItemOption>
-                    <MenuItemOption value="Uk Site>Hot Water">Hot Water</MenuItemOption>
-                    <MenuItemOption value="Uk Site>Hot Water Accessories">Hot Water Accessories</MenuItemOption>
-                    <MenuItemOption value="Uk Site>HydroChill">HydroChill</MenuItemOption>
-                    <MenuItemOption value="Uk Site>HydroChill Accessories">HydroChill Accessories</MenuItemOption>
-                    <MenuItemOption value="Uk Site>HydroTap Accessories">HydroTap Accessories</MenuItemOption>
+                    <MenuItemOption key={"Any"} value={""}>Any</MenuItemOption>
+
+                    {Array(+options.length)
+                        .fill("")
+                        .map((n, i) => {
+                            return <MenuItemOption key={options[i].id} value={options[i].name}>{options[i].name}</MenuItemOption>;
+                        })}
+
                 </MenuOptionGroup>
             </MenuList>
         </Menu>

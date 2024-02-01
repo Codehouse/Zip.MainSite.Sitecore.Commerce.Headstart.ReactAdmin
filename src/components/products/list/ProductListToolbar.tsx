@@ -26,6 +26,9 @@ const ProductListToolbar: FC<ProductListToolbarProps> = ({
   queryParams,
   selected
 }) => {
+
+  const catalogId = sessionStorage.getItem("catalogId");
+
   return (
     <Flex
       wrap="wrap"
@@ -38,7 +41,7 @@ const ProductListToolbar: FC<ProductListToolbarProps> = ({
       <DebouncedSearchInput label="Search products" value={queryParams["Search"]} onSearch={updateQuery("s", true)} />
       <SimpleGrid gridTemplateColumns={"1fr 1fr 1fr"} gap={2} alignItems={"stretch"}>
         <ProductRegionFilter value={filterParams["xp.Catalogue"]} onChange={updateQuery("region", true)} />
-        <ProductCategoryFilter value={filterParams["xp.Category"]} onChange={updateQuery("category", true)} />
+        <ProductCategoryFilter catalogId={catalogId} value={filterParams["xp.Category"]} onChange={updateQuery("category", true)} />
         <ProductListActions selected={selected} onBulkPromote={onBulkPromote} onBulkEdit={onBulkEdit} />
       </SimpleGrid>
       <HStack ml="auto">
