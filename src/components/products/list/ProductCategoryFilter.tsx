@@ -1,10 +1,9 @@
-import { ChevronDownIcon } from "@chakra-ui/icons"
-import { Button, HStack, Menu, MenuButton, MenuItemOption, MenuItemOptionProps, MenuList, MenuOptionGroup, Skeleton, Tag, Text } from "@chakra-ui/react"
-import { el } from "date-fns/locale"
-import { debounce, isEmpty } from "lodash"
-import { Categories } from "ordercloud-javascript-sdk"
-import { FC, useEffect, useMemo, useState } from "react"
-import { ICategory } from "types/ordercloud/ICategoryXp"
+import {ChevronDownIcon} from "@chakra-ui/icons"
+import {Button, HStack, Menu, MenuButton, MenuItemOption, MenuItemOptionProps, MenuList, MenuOptionGroup, Skeleton, Tag, Text} from "@chakra-ui/react"
+import {debounce, isEmpty} from "lodash"
+import {Categories} from "ordercloud-javascript-sdk"
+import {FC, useEffect, useMemo, useState} from "react"
+import {ICategory} from "types/ordercloud/ICategoryXp"
 
 interface IProductCategoryFilter {
     value: any
@@ -17,7 +16,7 @@ interface IOptions {
     name: string;
 }
 
-const ProductCategoryFilter: FC<IProductCategoryFilter> = ({ value, catalogId, onChange }) => {
+const ProductCategoryFilter: FC<IProductCategoryFilter> = ({value, catalogId, onChange}) => {
 
     const [options, setOptions] = useState<IOptions[]>([])
     const [loading, setLoading] = useState(true)
@@ -29,7 +28,7 @@ const ProductCategoryFilter: FC<IProductCategoryFilter> = ({ value, catalogId, o
                     setLoading(true)
                     if (catalogId != undefined && !isEmpty(catalogId)) {
                         const allCatalogs = await Categories.List<ICategory>(catalogId)
-                        setOptions(allCatalogs.Items.map((catalog) => ({ id: catalog.ID, name: catalog.Name })))
+                        setOptions(allCatalogs.Items.map((catalog) => ({id: catalog.ID, name: catalog.Name})))
                     }
                     else {
                         setOptions([])

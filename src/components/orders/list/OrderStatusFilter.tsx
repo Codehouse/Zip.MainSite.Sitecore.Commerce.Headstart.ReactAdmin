@@ -1,14 +1,14 @@
-import { ChevronDownIcon } from "@chakra-ui/icons"
-import { Button, HStack, Menu, MenuButton, MenuItemOption, MenuList, MenuOptionGroup, Text } from "@chakra-ui/react"
-import { FC } from "react"
-import { OrderStatus } from "../OrderStatus"
+import {ChevronDownIcon} from "@chakra-ui/icons"
+import {Button, HStack, Menu, MenuButton, MenuItemOption, MenuList, MenuOptionGroup, Text} from "@chakra-ui/react"
+import {FC} from "react"
+import {OrderStatus} from "../OrderStatus"
 
 interface IOrderStatusFilter {
   value: any
   onChange: (newValue: any) => void
 }
 
-const OrderStatusFilter: FC<IOrderStatusFilter> = ({ value, onChange }) => {
+const OrderStatusFilter: FC<IOrderStatusFilter> = ({value, onChange}) => {
   return (
     <Menu>
       <MenuButton as={Button} py={0} variant="outline">

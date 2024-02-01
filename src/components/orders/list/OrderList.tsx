@@ -1,15 +1,15 @@
-import { DataTableColumn } from "@/components/shared/DataTable/DataTable"
-import ListView, { ListViewTableOptions } from "@/components/shared/ListView/ListView"
-import { Box, Container, Text, useDisclosure } from "@chakra-ui/react"
-import { OrderDirection, Orders } from "ordercloud-javascript-sdk"
-import { FC, useCallback, useState } from "react"
-import { IOrder } from "types/ordercloud/IOrder"
-import { dateHelper, priceHelper } from "utils"
+import {DataTableColumn} from "@/components/shared/DataTable/DataTable"
+import ListView, {ListViewTableOptions} from "@/components/shared/ListView/ListView"
+import {Box, Container, Text, useDisclosure} from "@chakra-ui/react"
+import {OrderDirection, Orders} from "ordercloud-javascript-sdk"
+import {FC, useCallback, useState} from "react"
+import {IOrder} from "types/ordercloud/IOrder"
+import {dateHelper, priceHelper} from "utils"
 import OrderDeleteModal from "../modals/OrderDeleteModal"
 import OrderActionMenu from "./OrderActionMenu"
 import OrderListToolbar from "./OrderListToolbar"
-import { OrderStatus } from "../OrderStatus"
-import { useAuth } from "hooks/useAuth"
+import {OrderStatus} from "../OrderStatus"
+import {useAuth} from "hooks/useAuth"
 
 export const OrderStatusColorSchemeMap = {
   "": "gray",
@@ -40,7 +40,7 @@ const OrderFilterMap = {
   status: "Status"
 }
 
-const OrderDefaultServiceOptions = { parameters: ["Incoming"] }
+const OrderDefaultServiceOptions = {parameters: ["Incoming"]}
 
 const RegionColumn: DataTableColumn<IOrder> = {
   header: "Region",
@@ -53,7 +53,7 @@ const OrderNumberColumn: DataTableColumn<IOrder> = {
   header: "Order #",
   accessor: "ID",
   width: "15%",
-  cell: ({ value }) => (
+  cell: ({value}) => (
     <Text noOfLines={1} wordBreak="break-all" title={value}>
       {value}
     </Text>
@@ -65,7 +65,7 @@ const CustomerNameColumn: DataTableColumn<IOrder> = {
   header: "Customer Name",
   accessor: "FromUser",
   width: "20%",
-  cell: ({ value }) => (
+  cell: ({value}) => (
     <Text noOfLines={2} title={value}>
       {`${value.FirstName} ${value.LastName}`}
     </Text>
@@ -88,7 +88,7 @@ const CustomerEmailColumn: DataTableColumn<IOrder> = {
   header: "Customer Email",
   accessor: "FromUser.Email",
   width: "20%",
-  cell: ({ value }) => (
+  cell: ({value}) => (
     <Text noOfLines={2} title={value}>
       {value || "N/A"}
     </Text>
@@ -100,7 +100,7 @@ const DateSubmittedColumn: DataTableColumn<IOrder> = {
   header: "Submitted On",
   accessor: "DateSubmitted",
   width: "15%",
-  cell: ({ value }) => <Text noOfLines={2}>{dateHelper.customFormatDate(value, "dd/mm/yyyy 'at' hh:mm")}</Text>,
+  cell: ({value}) => <Text noOfLines={2}>{dateHelper.customFormatDate(value, "dd/mm/yyyy 'at' hh:mm")}</Text>,
   sortable: true
 }
 
@@ -122,7 +122,7 @@ const StatusColumn: DataTableColumn<IOrder> = {
   header: "Status",
   accessor: "Status",
   width: "15%",
-  cell: ({ value }) => <OrderStatus status={value} />,
+  cell: ({value}) => <OrderStatus status={value} />,
   sortable: true
 }
 
@@ -130,7 +130,7 @@ const TotalColumn: DataTableColumn<IOrder> = {
   header: "Total",
   accessor: "Total",
   width: "5%",
-  cell: ({ value }) => (
+  cell: ({value}) => (
     <Text noOfLines={1} title={value}>
       {priceHelper.formatPrice(value)}
     </Text>
@@ -156,7 +156,7 @@ const OrderList: FC = () => {
   const [actionOrder, setActionOrder] = useState<IOrder>()
   const editDisclosure = useDisclosure()
   const deleteDisclosure = useDisclosure()
-  const { isSupplier } = useAuth()
+  const {isSupplier} = useAuth()
 
   // For supplier orders, the order will always be from the admin user
   // so its not very helpful to include the customer informtion, omitting for now
@@ -223,7 +223,7 @@ const OrderList: FC = () => {
       itemHrefResolver={resolveOrderDetailHref}
       defaultServiceOptions={OrderDefaultServiceOptions}
     >
-      {({ renderContent, items, ...listViewChildProps }) => (
+      {({renderContent, items, ...listViewChildProps}) => (
         <Container maxW="100%" bgColor="st.mainBackgroundColor" flexGrow={1} p={[4, 6, 8]}>
           <Box>
             <OrderListToolbar {...listViewChildProps} onBulkEdit={editDisclosure.onOpen} />
@@ -236,8 +236,8 @@ const OrderList: FC = () => {
               actionOrder
                 ? [actionOrder]
                 : items
-                  ? items.filter((order) => listViewChildProps.selected.includes(order.ID))
-                  : []
+                ? items.filter((order) => listViewChildProps.selected.includes(order.ID))
+                : []
             }
             disclosure={deleteDisclosure}
           />

@@ -1,6 +1,6 @@
-import { ChevronDownIcon } from "@chakra-ui/icons"
-import { Button, HStack, Menu, MenuButton, MenuItemOption, MenuList, MenuOptionGroup, Tag, Text } from "@chakra-ui/react"
-import { useAuth } from "hooks/useAuth"
+import {ChevronDownIcon} from "@chakra-ui/icons"
+import {Button, HStack, Menu, MenuButton, MenuItemOption, MenuList, MenuOptionGroup, Tag, Text} from "@chakra-ui/react"
+import {useAuth} from "hooks/useAuth"
 import React from "react"
 
 interface OrderDateRangeFilterProps {
@@ -33,7 +33,7 @@ function lastYer() {
 
 var optionList = ["Any", "30 Days", "60 Days", "90 Days", "This Year", "Last Year"]
 
-export function OrderDateRangeFilter({ fromValue, toValue, rangeValue, onChange, updateQuery }: OrderDateRangeFilterProps) {
+export function OrderDateRangeFilter({fromValue, toValue, rangeValue, onChange, updateQuery}: OrderDateRangeFilterProps) {
     const { isSupplier } = useAuth()
     if (isSupplier) return null
 

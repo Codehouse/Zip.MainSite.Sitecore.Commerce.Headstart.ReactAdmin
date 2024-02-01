@@ -1,15 +1,15 @@
-import { Button, Flex, HStack, SimpleGrid } from "@chakra-ui/react"
+import {Button, Flex, HStack, SimpleGrid} from "@chakra-ui/react"
 import Link from "next/link"
 // import Link from "../../navigation/Link"
-import { FC } from "react"
+import {FC} from "react"
 import DebouncedSearchInput from "../../shared/DebouncedSearchInput/DebouncedSearchInput"
-import { ListViewChildrenProps } from "../../shared/ListView/ListView"
+import {ListViewChildrenProps} from "../../shared/ListView/ListView"
 import ListViewMetaInfo from "../../shared/ListViewMetaInfo/ListViewMetaInfo"
 import ProductListActions from "./ProductListActions"
 import ProductRegionFilter from "./ProductRegionFilter"
 import ProductCategoryFilter from "./ProductCategoryFilter"
 import ProtectedContent from "@/components/auth/ProtectedContent"
-import { appPermissions } from "config/app-permissions.config"
+import {appPermissions} from "config/app-permissions.config"
 
 interface ProductListToolbarProps extends Omit<ListViewChildrenProps, "renderContent"> {
   onBulkPromote: () => void

@@ -1,9 +1,9 @@
-import { ChevronDownIcon } from "@chakra-ui/icons"
-import { Button, HStack, Menu, MenuButton, MenuItemOption, MenuList, MenuOptionGroup, Skeleton, Tag, Text } from "@chakra-ui/react"
-import { FC, useEffect, useMemo, useState } from "react"
-import { debounce } from "lodash"
-import { Catalogs } from "ordercloud-javascript-sdk"
-import { ICatalog } from "types/ordercloud/ICatalog"
+import {ChevronDownIcon} from "@chakra-ui/icons"
+import {Button, HStack, Menu, MenuButton, MenuItemOption, MenuList, MenuOptionGroup, Skeleton, Tag, Text} from "@chakra-ui/react"
+import {FC, useEffect, useMemo, useState} from "react"
+import {debounce} from "lodash"
+import {Catalogs} from "ordercloud-javascript-sdk"
+import {ICatalog} from "types/ordercloud/ICatalog"
 
 interface IProductRegionFilter {
     value: any
@@ -15,7 +15,7 @@ interface IOptions {
     name: string;
 }
 
-const ProductRegionFilter: FC<IProductRegionFilter> = ({ value, onChange }) => {
+const ProductRegionFilter: FC<IProductRegionFilter> = ({value, onChange}) => {
 
     const [options, setOptions] = useState<IOptions[]>([])
     const [loading, setLoading] = useState(true)

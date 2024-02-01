@@ -1,16 +1,16 @@
-import { Box, Button, Stack } from "@chakra-ui/react"
+import {Box, Button, Stack} from "@chakra-ui/react"
 import Link from "next/link"
-import { FC } from "react"
+import {FC} from "react"
 import DebouncedSearchInput from "../../shared/DebouncedSearchInput/DebouncedSearchInput"
-import { ListViewChildrenProps } from "../../shared/ListView/ListView"
+import {ListViewChildrenProps} from "../../shared/ListView/ListView"
 import ListViewMetaInfo from "../../shared/ListViewMetaInfo/ListViewMetaInfo"
 import OrderStatusFilter from "./OrderStatusFilter"
 import OrderListActions from "./OrderListActions"
-import { OrderRegionFilter } from "./OrderRegionFilter"
-import { OrderDateRangeFilter } from "./OrderDateRangeFilter"
-import { OrderPaymentStatusFilter } from "./OrderPaymentStatusFilter"
+import {OrderRegionFilter} from "./OrderRegionFilter"
+import {OrderDateRangeFilter} from "./OrderDateRangeFilter"
+import {OrderPaymentStatusFilter} from "./OrderPaymentStatusFilter"
 import ProtectedContent from "@/components/auth/ProtectedContent"
-import { appPermissions } from "config/app-permissions.config"
+import {appPermissions} from "config/app-permissions.config"
 
 interface OrderListToolbarProps extends Omit<ListViewChildrenProps, "renderContent"> {
   onBulkEdit: () => void
@@ -26,7 +26,6 @@ const OrderListToolbar: FC<OrderListToolbarProps> = ({
   routeParams,
   selected
 }) => {
-
   return (
     <>
       <Stack direction="row" mb={5}>
