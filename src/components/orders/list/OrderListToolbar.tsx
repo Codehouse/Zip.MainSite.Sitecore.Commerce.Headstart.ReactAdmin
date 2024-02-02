@@ -6,7 +6,9 @@ import {ListViewChildrenProps} from "../../shared/ListView/ListView"
 import ListViewMetaInfo from "../../shared/ListViewMetaInfo/ListViewMetaInfo"
 import OrderStatusFilter from "./OrderStatusFilter"
 import OrderListActions from "./OrderListActions"
-import {OrderDirectionFilter} from "./OrderDirectionFilter"
+import {OrderRegionFilter} from "./OrderRegionFilter"
+import {OrderDateRangeFilter} from "./OrderDateRangeFilter"
+import {OrderPaymentStatusFilter} from "./OrderPaymentStatusFilter"
 import ProtectedContent from "@/components/auth/ProtectedContent"
 import {appPermissions} from "config/app-permissions.config"
 
@@ -30,7 +32,9 @@ const OrderListToolbar: FC<OrderListToolbarProps> = ({
         <Stack direction={["column", "column", "column", "row"]}>
           <DebouncedSearchInput label="Search orders" value={queryParams["Search"]} onSearch={updateQuery("s", true)} />
           <Stack direction="row">
-            <OrderDirectionFilter value={routeParams["Direction"]} onChange={updateQuery("d", true)} />
+            <OrderRegionFilter value={queryParams["xp.Catalogue"]} onChange={updateQuery("region", true)} />
+            <OrderDateRangeFilter fromValue={queryParams["From"]} toValue={queryParams["To"]} rangeValue={queryParams["DateRange"]} onChange={updateQuery("dateRange", true)} updateQuery={updateQuery} />
+            <OrderPaymentStatusFilter value={queryParams["xp.PaymentStatus"]} onChange={updateQuery("paymentStatus", true)} />
             <OrderStatusFilter value={filterParams["Status"]} onChange={updateQuery("status", true)} />
             <OrderListActions />
           </Stack>

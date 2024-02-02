@@ -14,7 +14,7 @@ const OrderStatusFilter: FC<IOrderStatusFilter> = ({value, onChange}) => {
       <MenuButton as={Button} py={0} variant="outline">
         <HStack alignContent="center" h="100%">
           <Text>Status</Text>
-          <OrderStatus status={value} />
+          <OrderStatus status={value && value.length ? value : "Any"} />
           <ChevronDownIcon />
         </HStack>
       </MenuButton>

@@ -28,7 +28,12 @@ const OrderParamMap = {
 const OrderQueryMap = {
   s: "Search",
   sort: "SortBy",
-  p: "Page"
+  p: "Page",
+  region: "xp.Catalogue",
+  dateRange: "DateRange",
+  from: "From",
+  to: "To",
+  paymentStatus: "xp.PaymentStatus"
 }
 
 const OrderFilterMap = {
@@ -37,8 +42,15 @@ const OrderFilterMap = {
 
 const OrderDefaultServiceOptions = {parameters: ["Incoming"]}
 
-const IdColumn: DataTableColumn<IOrder> = {
-  header: "ID",
+const RegionColumn: DataTableColumn<IOrder> = {
+  header: "Region",
+  accessor: "xp.Catalogue",
+  width: "15%",
+  sortable: true
+}
+
+const OrderNumberColumn: DataTableColumn<IOrder> = {
+  header: "Order #",
   accessor: "ID",
   width: "15%",
   cell: ({value}) => (
@@ -60,6 +72,18 @@ const CustomerNameColumn: DataTableColumn<IOrder> = {
   )
 }
 
+const PaymentStatusColumn: DataTableColumn<IOrder> = {
+  header: "Payment Status",
+  accessor: "xp.PaymentStatus",
+  width: "20%",
+  cell: ({ value }) => (
+    <Text noOfLines={1} wordBreak="break-all" title={value}>
+      {value}
+    </Text>
+  ),
+  sortable: true
+}
+
 const CustomerEmailColumn: DataTableColumn<IOrder> = {
   header: "Customer Email",
   accessor: "FromUser.Email",
@@ -76,7 +100,7 @@ const DateSubmittedColumn: DataTableColumn<IOrder> = {
   header: "Submitted On",
   accessor: "DateSubmitted",
   width: "15%",
-  cell: ({value}) => <Text noOfLines={2}>{dateHelper.formatDate(value)}</Text>,
+  cell: ({value}) => <Text noOfLines={2}>{dateHelper.customFormatDate(value, "dd/mm/yyyy 'at' hh:mm")}</Text>,
   sortable: true
 }
 
@@ -114,6 +138,13 @@ const TotalColumn: DataTableColumn<IOrder> = {
   sortable: true
 }
 
+const PromoCodeColumn: DataTableColumn<IOrder> = {
+  header: "Promo Code",
+  accessor: "xp.PromoCode",
+  width: "5%",
+  sortable: true
+}
+
 const NumLineItemsColumn: DataTableColumn<IOrder> = {
   header: "# of line items",
   accessor: "LineItemCount",
@@ -132,24 +163,27 @@ const OrderList: FC = () => {
   // we may add this once direct buyer => supplier orders are supported
   const OrderReturnTableOptions: ListViewTableOptions<IOrder> = {
     responsive: {
-      base: [IdColumn, StatusColumn],
-      md: [IdColumn, StatusColumn, TotalColumn],
+      base: [RegionColumn, OrderNumberColumn],
+      md: [RegionColumn, OrderNumberColumn, StatusColumn],
       lg: isSupplier
-        ? [IdColumn, DateSubmittedColumn, StatusColumn, TotalColumn]
-        : [IdColumn, CustomerEmailColumn, StatusColumn, TotalColumn],
+        ? [RegionColumn, OrderNumberColumn, DateSubmittedColumn, StatusColumn]
+        : [RegionColumn, OrderNumberColumn, CustomerEmailColumn, StatusColumn],
       xl: isSupplier
-        ? [IdColumn, DateSubmittedColumn, StatusColumn, TotalColumn, NumLineItemsColumn]
+        ? [RegionColumn, OrderNumberColumn, DateSubmittedColumn, StatusColumn, TotalColumn]
         : [
-            IdColumn,
-            DateSubmittedColumn,
-            BuyerIdColumn,
-            SupplierIdColumn,
-            CustomerNameColumn,
-            CustomerEmailColumn,
-            StatusColumn,
-            TotalColumn,
-            NumLineItemsColumn
-          ]
+          RegionColumn,
+          OrderNumberColumn,
+          DateSubmittedColumn,
+          BuyerIdColumn,
+          SupplierIdColumn,
+          CustomerNameColumn,
+          CustomerEmailColumn,
+          PaymentStatusColumn,
+          StatusColumn,
+          TotalColumn,
+          PromoCodeColumn,
+          NumLineItemsColumn
+        ]
     },
     hideColumns: (column, params) => {
       const isAdmin = !isSupplier
