@@ -8,8 +8,6 @@ interface OrderPaymentStatusFilterProps {
 }
 
 export function OrderPaymentStatusFilter({value, onChange}: OrderPaymentStatusFilterProps) {
-    const { isSupplier } = useAuth()
-    if (isSupplier) return null
     return (
         <Menu>
             <MenuButton as={Button} py={0} variant="outline">
