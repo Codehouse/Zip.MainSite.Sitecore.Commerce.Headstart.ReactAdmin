@@ -1,6 +1,5 @@
 import {ChevronDownIcon} from "@chakra-ui/icons"
 import {Button, HStack, Menu, MenuButton, MenuItemOption, MenuList, MenuOptionGroup, Tag, Text} from "@chakra-ui/react"
-import {useAuth} from "hooks/useAuth"
 
 interface OrderPaymentStatusFilterProps {
     value: any
