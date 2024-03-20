@@ -2,7 +2,7 @@ import {appSettings} from "config/app-settings"
 import {Orders, Products, Promotions} from "ordercloud-javascript-sdk"
 import {IOrder} from "types/ordercloud/IOrder"
 import {endOfToday, endOfWeek, endOfYesterday, startOfToday, startOfWeek, startOfYesterday, subWeeks} from "date-fns"
-import {uniq} from "lodash"
+import {filter, uniq} from "lodash"
 import pLimit from "p-limit"
 const mockData = require("../mockdata/dashboard_data.json")
 
@@ -18,27 +18,27 @@ export const dashboardService = {
   getTotalProductsCount
 }
 
-function getTodaysMoney(orders: IOrder[]): number {
+function getTodaysMoney(orders: IOrder[], region: string): number {
   if (!appSettings.useRealDashboardData) {
     return mockData.todaysmoney.totalamount
   }
   const startOfTodayIso = startOfToday().toISOString()
   const endOfTodayIso = endOfToday().toISOString()
 
-  return getTotalSalesForRange(orders, startOfTodayIso, endOfTodayIso)
+  return getTotalSalesForRange(orders, region, startOfTodayIso, endOfTodayIso)
 }
 
-function getPreviousTodaysMoney(orders: IOrder[]): number {
+function getPreviousTodaysMoney(orders: IOrder[], region: string): number {
   if (!appSettings.useRealDashboardData) {
     return mockData.todaysmoney.previoustotalamount
   }
   const startOfYesterdayIso = startOfYesterday().toISOString()
   const endOfYesterdayIso = endOfYesterday().toISOString()
 
-  return getTotalSalesForRange(orders, startOfYesterdayIso, endOfYesterdayIso)
+  return getTotalSalesForRange(orders, region, startOfYesterdayIso, endOfYesterdayIso)
 }
 
-function getWeeklySales(orders: IOrder[]): number {
+function getWeeklySales(orders: IOrder[], region: string): number {
   if (!appSettings.useRealDashboardData) {
     return mockData.weeksales.totalamount
   }
@@ -46,10 +46,10 @@ function getWeeklySales(orders: IOrder[]): number {
   const startOfWeekIso = startOfWeek(now).toISOString()
   const endOfWeekIso = endOfWeek(now).toISOString()
 
-  return getTotalSalesForRange(orders, startOfWeekIso, endOfWeekIso)
+  return getTotalSalesForRange(orders, region, startOfWeekIso, endOfWeekIso)
 }
 
-function getPreviousWeeklySales(orders: IOrder[]): number {
+function getPreviousWeeklySales(orders: IOrder[], region: string): number {
   if (!appSettings.useRealDashboardData) {
     return mockData.weeksales.previoustotalamount
   }
@@ -58,7 +58,7 @@ function getPreviousWeeklySales(orders: IOrder[]): number {
   const startOfPreviousWeekIso = startOfWeek(previousWeek).toISOString()
   const endOfPreviousWeekIso = endOfWeek(previousWeek).toISOString()
 
-  return getTotalSalesForRange(orders, startOfPreviousWeekIso, endOfPreviousWeekIso)
+  return getTotalSalesForRange(orders, region, startOfPreviousWeekIso, endOfPreviousWeekIso)
 }
 
 function getWeekUniqueUsers(orders: IOrder[]): number {
@@ -100,29 +100,55 @@ function getPreviousWeekUniqueUsers(orders: IOrder[]): number {
   return userList.length
 }
 
-function getTotalSalesForRange(orders: IOrder[], start: string, end: string): number {
-  const filteredOrders = orders.filter((order) => {
+function getTotalSalesForRange(orders: IOrder[], region: string, start: string, end: string): number {
+
+  const filteredRegionOrders = orders.filter((order) => {
+    if (region)
+    {
+      //return order.xp.Catalog == region;
+    }
+  })
+
+  const filteredOrders = filteredRegionOrders.filter((order) => {
     return order.DateSubmitted > start && order.DateSubmitted < end
   })
+
+  
   const result = filteredOrders.reduce((accumulator, obj) => {
     return accumulator + obj.Total
   }, 0)
-  return result
+
+  return result;
 }
 
-async function getTotalPromosCount(): Promise<number> {
+async function getTotalPromosCount(region: string): Promise<number> {
   if (!appSettings.useRealDashboardData) {
     return mockData.totalpromos.totalamount
   }
-  const response = await Promotions.List()
+
+  const filters = {
+    filters: {
+      //'xp.Catalogue': region
+    }
+  }
+
+  const response = await Promotions.List(filters)
   return response.Meta.TotalCount
 }
 
-async function getTotalProductsCount(): Promise<number> {
+async function getTotalProductsCount(region: string): Promise<number> {
   if (!appSettings.useRealDashboardData) {
     return mockData.totalproducts.totalamount
   }
-  const response = await Products.List()
+
+  const filters = {
+    filters: {
+      'xp.Catalogue': region
+    }
+  }
+
+  const response = await Products.List(filters);
+
   return response.Meta.TotalCount
 }
 

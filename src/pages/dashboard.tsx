@@ -49,6 +49,7 @@ const Dashboard = () => {
   const hasAccessToViewReports = useHasAccess(appPermissions.DashboardViewer)
   const [canViewReports, setCanViewReports] = useState(false)
   const [data, setData] = useState<DashboardData>({})
+  const region = 'Uk Site';//Au Site, Nz Site
 
   const [above2xl] = useMediaQuery(`(min-width: ${theme.breakpoints["2xl"]})`, {
     ssr: true,
@@ -62,21 +63,21 @@ const Dashboard = () => {
   useEffect(() => {
     const initDashboardData = async () => {
       const [ordersList, totalProductsCount, totalPromosCount] = await Promise.all([
-        dashboardService.listAllOrdersSincePreviousWeek(),
-        dashboardService.getTotalProductsCount(),
-        dashboardService.getTotalPromosCount()
+        dashboardService.listAllOrdersSincePreviousWeek(region),
+        dashboardService.getTotalProductsCount(region), 
+        dashboardService.getTotalPromosCount(region)
       ])
 
       // Todays Sales
-      const todaysSales = dashboardService.getTodaysMoney(ordersList.Items)
+      const todaysSales = dashboardService.getTodaysMoney(ordersList.Items, region)
       const previousTodaysSales = dashboardService.getPreviousTodaysMoney(ordersList.Items)
 
       // Total Sales
-      const weekSales = dashboardService.getWeeklySales(ordersList.Items)
+      const weekSales = dashboardService.getWeeklySales(ordersList.Items, region)
       const previousWeekSales = dashboardService.getPreviousWeeklySales(ordersList.Items)
 
       // Unique Users
-      const weekUniqueUsers = dashboardService.getWeekUniqueUsers(ordersList.Items)
+      const weekUniqueUsers = dashboardService.getWeekUniqueUsers(ordersList.Items, region)
       const previousWeekUniqueUsers = dashboardService.getPreviousWeekUniqueUsers(ordersList.Items)
 
       setData({
@@ -108,13 +109,20 @@ const Dashboard = () => {
       count: data.ordersList?.Meta?.TotalCount,
       lastUpdated: dateHelper.formatDate(
         data.ordersList?.Items?.length ? data.ordersList.Items[0].LastUpdated : new Date().toISOString()
-      )
+      ),
+      link: "/orders",
     },
-    {label: "total products", labelSingular: "product", count: data.totalProductsCount},
+    {
+      label: "total products", 
+      labelSingular: "product", 
+      count: data.totalProductsCount,
+      link: "/products",
+    },
     {
       label: "total promotions",
       labelSingular: "promotion",
-      count: data.totalPromosCount
+      count: data.totalPromosCount,
+      link: "/promotions",
     }
   ]
 
@@ -155,7 +163,7 @@ const Dashboard = () => {
       as={Link}
       variant={"levitating"}
       border={`.5px solid ${schraTheme.colors.blackAlpha[300]}`}
-      href={"/" + item.label}
+      href={"/" + item.link}
       key={item.label}
       pos={"relative"}
     >
