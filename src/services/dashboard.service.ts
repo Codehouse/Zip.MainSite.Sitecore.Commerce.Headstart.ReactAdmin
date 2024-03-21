@@ -105,7 +105,7 @@ function getTotalSalesForRange(orders: IOrder[], region: string, start: string, 
   const filteredRegionOrders = orders.filter((order) => {
     if (region)
     {
-      //return order.xp.Catalog == region;
+      return order?.xp?.CatalogID == region;
     }
   })
 
@@ -143,7 +143,7 @@ async function getTotalProductsCount(region: string): Promise<number> {
 
   const filters = {
     filters: {
-      'xp.Catalogue': region
+      'catalogID': region
     }
   }
 

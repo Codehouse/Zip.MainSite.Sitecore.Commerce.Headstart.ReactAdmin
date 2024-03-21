@@ -6,4 +6,5 @@ export type IOrder = Order<IOrderXp, IBuyerUserXp, IBuyerAddressXp>
 
 export interface IOrderXp {
   // add custom xp properties required for this project here
+  CatalogID?: string
 }

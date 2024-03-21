@@ -49,7 +49,7 @@ const Dashboard = () => {
   const hasAccessToViewReports = useHasAccess(appPermissions.DashboardViewer)
   const [canViewReports, setCanViewReports] = useState(false)
   const [data, setData] = useState<DashboardData>({})
-  const region = 'Uk Site';//Au Site, Nz Site
+  const region = 'Au-Site';//Au-Site, Nz-Site, Uk-Site
 
   const [above2xl] = useMediaQuery(`(min-width: ${theme.breakpoints["2xl"]})`, {
     ssr: true,
