@@ -1,7 +1,7 @@
 import {appSettings} from "config/app-settings"
 import {Orders, Products, Promotions} from "ordercloud-javascript-sdk"
 import {IOrder} from "types/ordercloud/IOrder"
-import {endOfToday, endOfWeek, endOfYesterday, startOfToday, startOfWeek, startOfYesterday, subWeeks} from "date-fns"
+import {endOfToday, endOfWeek, endOfYesterday, startOfMonth, startOfToday, startOfWeek, startOfYesterday, subWeeks} from "date-fns"
 import {filter, uniq} from "lodash"
 import pLimit from "p-limit"
 const mockData = require("../mockdata/dashboard_data.json")
@@ -22,6 +22,7 @@ function getTodaysMoney(orders: IOrder[], region: string): number {
   if (!appSettings.useRealDashboardData) {
     return mockData.todaysmoney.totalamount
   }
+
   const startOfTodayIso = startOfToday().toISOString()
   const endOfTodayIso = endOfToday().toISOString()
 
@@ -152,7 +153,7 @@ async function getTotalProductsCount(region: string): Promise<number> {
   return response.Meta.TotalCount
 }
 
-async function listAllOrdersSincePreviousWeek() {
+async function listAllOrdersSincePreviousWeek(region: string) {
   if (!appSettings.useRealDashboardData) {
     return {
       Meta: {
@@ -163,10 +164,12 @@ async function listAllOrdersSincePreviousWeek() {
   const now = new Date()
   const previousWeek = subWeeks(now, 1)
   const startOfPreviousWeek = startOfWeek(previousWeek).toISOString()
+  
   const filters = {
     sortBy: ["DateSubmitted" as "DateSubmitted"],
     filters: {
-      DateSubmitted: `>${startOfPreviousWeek}`
+      DateSubmitted: `>${startOfPreviousWeek}`,
+      'xp.CatalogID': region
     },
     pageSize: 100
   }
