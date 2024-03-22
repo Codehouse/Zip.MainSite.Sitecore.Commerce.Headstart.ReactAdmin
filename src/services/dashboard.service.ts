@@ -106,7 +106,7 @@ function getTotalSalesForRange(orders: IOrder[], region: string, start: string, 
   const filteredRegionOrders = orders.filter((order) => {
     if (region)
     {
-      return order?.xp?.CatalogID == region;
+      return order?.xp?.CatalogId == region;
     }
   })
 
@@ -144,7 +144,7 @@ async function getTotalProductsCount(region: string): Promise<number> {
 
   const filters = {
     filters: {
-      'catalogID': region
+      'catalogId': region
     }
   }
 
@@ -169,7 +169,7 @@ async function listAllOrdersSincePreviousWeek(region: string) {
     sortBy: ["DateSubmitted" as "DateSubmitted"],
     filters: {
       DateSubmitted: `>${startOfPreviousWeek}`,
-      'xp.CatalogID': region
+      'xp.CatalogId': region
     },
     pageSize: 100
   }
