@@ -55,6 +55,12 @@ const SidebarMenu = ({isInDrawer, onLinkClick}: SidebarMenuProps) => {
       permisshies: [appPermissions.OrderViewer, appPermissions.OrderManager]
     },
     {
+      label: "Promo Redemptions",
+      path: "/promoredemptions",
+      icon: TbReceipt2,
+      permisshies: [appPermissions.OrderViewer, appPermissions.OrderManager]
+    },
+    {
       label: "Returns",
       path: "/returns",
       icon: TbTruckReturn,

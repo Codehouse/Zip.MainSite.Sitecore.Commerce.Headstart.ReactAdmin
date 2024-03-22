@@ -46,7 +46,7 @@ const ProductSalesList: FC = () => {
   useEffect(() => {
     async function fetchFilters() {
         try {
-            const response = await axios.get(`${baseApiUrl}/v1/lineitems/Incoming?Order.DateSubmitted=>=2024-01-01&Order.DateSubmitted=<=2024-03-18&pageSize=100`, { headers: {"Authorization" : `Bearer ${token}`}}); //Order.xp.Catalog=region
+            const response = await axios.get(`${baseApiUrl}/v1/lineitems/Incoming?Order.DateSubmitted=>=2024-01-01&Order.DateSubmitted=<=2024-03-24&pageSize=100&Order.xp.CatalogID=Au-Site`, { headers: {"Authorization" : `Bearer ${token}`}});
             const lineItemData: LineItem[] = response.data.Items.map((item: LineItem) => createData(item));
             setOriginalRows(lineItemData);
         } catch (error) {
@@ -60,7 +60,11 @@ const ProductSalesList: FC = () => {
  
   return (
     <>{
-      console.log(originalRows)}</>
+      originalRows?.map((lineItem) => {
+        console.log(lineItem.Product.Name, lineItem.Product.xp.ItemCode, lineItem.Quantity, lineItem.LineTotal);
+      })
+    })
+    </>
   )
 }
 
