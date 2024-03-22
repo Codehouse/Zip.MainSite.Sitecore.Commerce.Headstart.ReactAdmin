@@ -1,8 +1,8 @@
-import {appSettings} from "config/app-settings"
-import {Orders, Products, Promotions} from "ordercloud-javascript-sdk"
-import {IOrder} from "types/ordercloud/IOrder"
-import {endOfToday, endOfWeek, endOfYesterday, startOfMonth, startOfToday, startOfWeek, startOfYesterday, subWeeks} from "date-fns"
-import {filter, uniq} from "lodash"
+import { appSettings } from "config/app-settings"
+import { Orders, Products, Promotions } from "ordercloud-javascript-sdk"
+import { IOrder } from "types/ordercloud/IOrder"
+import { endOfToday, endOfWeek, endOfYesterday, startOfMonth, startOfToday, startOfWeek, startOfYesterday, subWeeks } from "date-fns"
+import { filter, uniq } from "lodash"
 import pLimit from "p-limit"
 const mockData = require("../mockdata/dashboard_data.json")
 
@@ -104,8 +104,7 @@ function getPreviousWeekUniqueUsers(orders: IOrder[]): number {
 function getTotalSalesForRange(orders: IOrder[], region: string, start: string, end: string): number {
 
   const filteredRegionOrders = orders.filter((order) => {
-    if (region)
-    {
+    if (region) {
       return order?.xp?.CatalogID == region;
     }
   })
@@ -114,7 +113,7 @@ function getTotalSalesForRange(orders: IOrder[], region: string, start: string, 
     return order.DateSubmitted > start && order.DateSubmitted < end
   })
 
-  
+
   const result = filteredOrders.reduce((accumulator, obj) => {
     return accumulator + obj.Total
   }, 0)
@@ -164,7 +163,7 @@ async function listAllOrdersSincePreviousWeek(region: string) {
   const now = new Date()
   const previousWeek = subWeeks(now, 1)
   const startOfPreviousWeek = startOfWeek(previousWeek).toISOString()
-  
+
   const filters = {
     sortBy: ["DateSubmitted" as "DateSubmitted"],
     filters: {
@@ -185,7 +184,7 @@ async function listAllOrdersSincePreviousWeek(region: string) {
   const requests = new Array(response1.Meta.TotalPages - 1).fill("").map(async (_, i) =>
     limitToMaxConcurrent(() => {
       console.timeStamp(`Requesting page ${i + 2} of ${response1.Meta.TotalPages}`)
-      return Orders.List("All", {...filters, page: i + 2})
+      return Orders.List("All", { ...filters, page: i + 2 })
     })
   )
   const responses = await Promise.all(requests)

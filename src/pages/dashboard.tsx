@@ -13,23 +13,31 @@ import {
   useMediaQuery,
   theme,
   Heading,
-  Skeleton
+  Skeleton,
+  Select,
+  Menu,
+  MenuButton,
+  Button,
+  MenuList,
+  MenuItem
 } from "@chakra-ui/react"
-import {HiOutlineCurrencyDollar, HiOutlineFolderOpen, HiOutlineUserAdd} from "react-icons/hi"
-import {useEffect, useState} from "react"
+import { HiOutlineCurrencyDollar, HiOutlineFolderOpen, HiOutlineUserAdd } from "react-icons/hi"
+import { useEffect, useState } from "react"
 import AverageOrderAmount from "components/analytics/AverageOrderAmount"
-import {NextSeo} from "next-seo"
+import { NextSeo } from "next-seo"
 import PercentChangeTile from "components/analytics/PercentChangeTile"
-import {appPermissions} from "config/app-permissions.config"
+import { appPermissions } from "config/app-permissions.config"
 import useHasAccess from "hooks/useHasAccess"
-import {Link} from "components/navigation/Link"
-import {ListPage} from "ordercloud-javascript-sdk"
-import {IOrder} from "types/ordercloud/IOrder"
-import {dashboardService} from "services/dashboard.service"
+import { Link } from "components/navigation/Link"
+import { ListPage } from "ordercloud-javascript-sdk"
+import { IOrder } from "types/ordercloud/IOrder"
+import { dashboardService } from "services/dashboard.service"
 import schraTheme from "theme/theme"
-import {TbArrowsDiagonal} from "react-icons/tb"
-import {appSettings} from "config/app-settings"
-import {dateHelper} from "utils"
+import { TbArrowsDiagonal } from "react-icons/tb"
+import { appSettings } from "config/app-settings"
+import { dateHelper } from "utils"
+import { ChevronDownIcon } from "@chakra-ui/icons"
+import DashboardRegionFilter from "@/components/dashboard/dashboardRegionFilter"
 
 interface DashboardData {
   todaysSales?: number
@@ -49,7 +57,11 @@ const Dashboard = () => {
   const hasAccessToViewReports = useHasAccess(appPermissions.DashboardViewer)
   const [canViewReports, setCanViewReports] = useState(false)
   const [data, setData] = useState<DashboardData>({})
-  const region = 'Au-Site';//Au-Site, Nz-Site, Uk-Site
+  const [region, setRegion] = useState('Au-Site')
+
+  const handleRegionChange = (value) => {
+    setRegion(value);
+  };
 
   const [above2xl] = useMediaQuery(`(min-width: ${theme.breakpoints["2xl"]})`, {
     ssr: true,
@@ -64,20 +76,20 @@ const Dashboard = () => {
     const initDashboardData = async () => {
       const [ordersList, totalProductsCount, totalPromosCount] = await Promise.all([
         dashboardService.listAllOrdersSincePreviousWeek(region),
-        dashboardService.getTotalProductsCount(region), 
+        dashboardService.getTotalProductsCount(region),
         dashboardService.getTotalPromosCount(region)
       ])
 
       // Todays Sales
       const todaysSales = dashboardService.getTodaysMoney(ordersList.Items, region)
-      const previousTodaysSales = dashboardService.getPreviousTodaysMoney(ordersList.Items)
+      const previousTodaysSales = dashboardService.getPreviousTodaysMoney(ordersList.Items, region)
 
       // Total Sales
       const weekSales = dashboardService.getWeeklySales(ordersList.Items, region)
-      const previousWeekSales = dashboardService.getPreviousWeeklySales(ordersList.Items)
+      const previousWeekSales = dashboardService.getPreviousWeeklySales(ordersList.Items, region)
 
       // Unique Users
-      const weekUniqueUsers = dashboardService.getWeekUniqueUsers(ordersList.Items, region)
+      const weekUniqueUsers = dashboardService.getWeekUniqueUsers(ordersList.Items)
       const previousWeekUniqueUsers = dashboardService.getPreviousWeekUniqueUsers(ordersList.Items)
 
       setData({
@@ -96,7 +108,7 @@ const Dashboard = () => {
       return
     }
     initDashboardData()
-  }, [canViewReports])
+  }, [canViewReports, region])
 
   if (!canViewReports) {
     return <div></div>
@@ -113,8 +125,8 @@ const Dashboard = () => {
       link: "/orders",
     },
     {
-      label: "total products", 
-      labelSingular: "product", 
+      label: "total products",
+      labelSingular: "product",
       count: data.totalProductsCount,
       link: "/products",
     },
@@ -207,6 +219,9 @@ const Dashboard = () => {
       <>
         <NextSeo title="Dashboard" />
         <VStack flexGrow={1} gap={4} p={[4, 6, 8]} h="100%" w="100%" bg={"st.mainBackgroundColor"}>
+          <Flex w="100%">
+            <DashboardRegionFilter value={region} onChange={handleRegionChange} />
+          </Flex>
           <Flex w="100%" gap={4} direction={above2xl ? "row" : "column-reverse"}>
             <SimpleGrid
               w="100%"
@@ -236,6 +251,9 @@ const Dashboard = () => {
     <>
       <NextSeo title="Dashboard" />
       <VStack flexGrow={1} gap={4} p={[4, 6, 8]} h="100%" w="100%" bg={"st.mainBackgroundColor"}>
+        <Flex w="100%">
+          <DashboardRegionFilter value={region} onChange={handleRegionChange} />
+        </Flex>
         <Flex w="100%" gap={4} direction={above2xl ? "row" : "column-reverse"}>
           <SimpleGrid
             w="100%"

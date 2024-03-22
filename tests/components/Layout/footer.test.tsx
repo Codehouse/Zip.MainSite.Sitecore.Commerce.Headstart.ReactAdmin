@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom"
-import {render, screen} from "@testing-library/react"
+import { render, screen } from "@testing-library/react"
 import Footer from "@/components/layout/Footer"
 
 describe("Index page", () => {
@@ -7,6 +7,6 @@ describe("Index page", () => {
     render(<Footer />)
     const copyrightText = screen.getByTestId("copyright")
     expect(copyrightText).toBeInTheDocument()
-    expect(copyrightText).toHaveTextContent("Sitecore.com All Rights Reserved.")
+    expect(copyrightText).toHaveTextContent("Copyright © 2024 Sitecore All Rights Reserved.")
   })
 })
