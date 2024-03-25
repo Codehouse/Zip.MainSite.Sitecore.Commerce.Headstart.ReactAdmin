@@ -89,7 +89,7 @@ const Dashboard = () => {
       const previousWeekSales = dashboardService.getPreviousWeeklySales(ordersList.Items, region)
 
       // Unique Users
-      const weekUniqueUsers = dashboardService.getWeekUniqueUsers(ordersList.Items)
+      const weekUniqueUsers = dashboardService.getWeekUniqueUsers(ordersList.Items, region)
       const previousWeekUniqueUsers = dashboardService.getPreviousWeekUniqueUsers(ordersList.Items)
 
       setData({

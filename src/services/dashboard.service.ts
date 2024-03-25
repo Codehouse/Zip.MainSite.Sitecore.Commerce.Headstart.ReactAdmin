@@ -62,7 +62,7 @@ function getPreviousWeeklySales(orders: IOrder[], region: string): number {
   return getTotalSalesForRange(orders, region, startOfPreviousWeekIso, endOfPreviousWeekIso)
 }
 
-function getWeekUniqueUsers(orders: IOrder[]): number {
+function getWeekUniqueUsers(orders: IOrder[], region: string): number { // TODO region filtering
   if (!appSettings.useRealDashboardData) {
     return mockData.uniqueusers.totalamount
   }
