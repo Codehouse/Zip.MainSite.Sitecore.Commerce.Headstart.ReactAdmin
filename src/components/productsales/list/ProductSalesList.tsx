@@ -39,7 +39,6 @@ const ProductSalesList: FC = () => {
   const cookies = new Cookies()
   const [region, setRegion] = useState('Au-Site')
   const [category, setCategory] = useState('')
-
   const token = cookies.get("ordercloud.access-token");
   const baseApiUrl = ocConfig.baseApiUrl;
   
@@ -55,12 +54,11 @@ const ProductSalesList: FC = () => {
     return { ...lineItem };
   };
 
-const catalogId = sessionStorage.getItem("catalogId");
-
   useEffect(() => {
     async function fetchFilters() {
         try {
-            const response = await axios.get(`${baseApiUrl}/v1/lineitems/Incoming?Order.DateSubmitted=>=2024-01-01&Order.DateSubmitted=<=2024-03-24&pageSize=100&Order.xp.CatalogID=Au-Site`, { headers: {"Authorization" : `Bearer ${token}`}});
+
+            const response = await axios.get(`${baseApiUrl}/v1/lineitems/Incoming?Order.DateSubmitted=>=2024-01-01&Order.DateSubmitted=<=2024-03-24&pageSize=100&Order.xp.CatalogID=${region}`, { headers: {"Authorization" : `Bearer ${token}`}});
             const lineItemData: LineItem[] = response.data.Items.map((item: LineItem) => createData(item));
             setOriginalRows(lineItemData);
         } catch (error) {
@@ -69,7 +67,7 @@ const catalogId = sessionStorage.getItem("catalogId");
     }
 
     fetchFilters();
-}, []);
+}, [region]);
  
   return (
     <>
@@ -77,7 +75,7 @@ const catalogId = sessionStorage.getItem("catalogId");
     <VStack flexGrow={1} gap={4} p={[4, 6, 8]} h="100%" w="100%" bg={"st.mainBackgroundColor"}>
       <Flex w="100%">
         <DashboardRegionFilter value={region} onChange={handleRegionChange} />
-        <ProductCategoryFilter catalogId={catalogId} value={category} onChange={handleCategoryChange} />
+        <ProductCategoryFilter catalogId={region} value={category} onChange={handleCategoryChange} />
       </Flex>
     </VStack>
     {originalRows?.map((lineItem) => {

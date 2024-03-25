@@ -58,14 +58,11 @@ const DashboardRegionFilter: FC<DashboardRegionFilter> = ({ value, onChange }) =
 
             <MenuList>
                 <MenuOptionGroup defaultValue={value} title="Filter by region" type="radio" onChange={customOnChange}>
-                    <MenuItemOption key={"Any"} value={""}>Any</MenuItemOption>
-
                     {Array(+options.length)
                         .fill("")
                         .map((n, i) => {
                             return <MenuItemOption key={options[i].id} value={options[i].id + ":" + options[i].name}>{options[i].name}</MenuItemOption>;
                         })}
-
                 </MenuOptionGroup>
             </MenuList>
         </Menu>
