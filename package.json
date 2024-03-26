@@ -38,7 +38,7 @@
     "axios": "^1.5.1",
     "chakra-react-select": "^4.7.2",
     "date-fns": "^2.30.0",
-    "date-fns-tz": "^2.0.0",
+    "date-fns-tz": "^2.0.1",
     "framer-motion": "^6.3.3",
     "lodash": "^4.17.21",
     "next": "12.2.0",

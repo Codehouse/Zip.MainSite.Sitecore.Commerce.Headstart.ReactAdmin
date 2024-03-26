@@ -4,6 +4,7 @@ import { IOrder } from "types/ordercloud/IOrder"
 import { endOfToday, endOfWeek, endOfYesterday, startOfMonth, startOfToday, startOfWeek, startOfYesterday, subWeeks } from "date-fns"
 import { filter, uniq } from "lodash"
 import pLimit from "p-limit"
+import { getDateForRegion, getTimezoneForRegion } from "utils/getDateForRegion"
 const mockData = require("../mockdata/dashboard_data.json")
 
 export const dashboardService = {
@@ -22,32 +23,31 @@ function getTodaysMoney(orders: IOrder[], region: string): number {
   if (!appSettings.useRealDashboardData) {
     return mockData.todaysmoney.totalamount
   }
+  const { start, end } = getDateForRegion({ startDate: startOfToday(), endDate: endOfToday(), region: getTimezoneForRegion(region) });
 
-  const startOfTodayIso = startOfToday().toISOString()
-  const endOfTodayIso = endOfToday().toISOString()
-
-  return getTotalSalesForRange(orders, region, startOfTodayIso, endOfTodayIso)
+  return getTotalSalesForRange(orders, region, start, end)
 }
 
 function getPreviousTodaysMoney(orders: IOrder[], region: string): number {
   if (!appSettings.useRealDashboardData) {
     return mockData.todaysmoney.previoustotalamount
   }
-  const startOfYesterdayIso = startOfYesterday().toISOString()
-  const endOfYesterdayIso = endOfYesterday().toISOString()
+  // const startOfYesterdayIso = startOfYesterday().toISOString()
+  // const endOfYesterdayIso = endOfYesterday().toISOString()
+  const { start, end } = getDateForRegion({ startDate: startOfYesterday(), endDate: endOfYesterday(), region: getTimezoneForRegion(region) });
 
-  return getTotalSalesForRange(orders, region, startOfYesterdayIso, endOfYesterdayIso)
+  return getTotalSalesForRange(orders, region, start, end)
 }
 
 function getWeeklySales(orders: IOrder[], region: string): number {
   if (!appSettings.useRealDashboardData) {
     return mockData.weeksales.totalamount
   }
-  const now = new Date()
-  const startOfWeekIso = startOfWeek(now).toISOString()
-  const endOfWeekIso = endOfWeek(now).toISOString()
-
-  return getTotalSalesForRange(orders, region, startOfWeekIso, endOfWeekIso)
+  const now = new Date();
+  // const startOfWeekIso = now.toISOString(); 
+  // const endOfWeekIso = now.toISOString(); 
+  const { start, end } = getDateForRegion({ startDate: now, endDate: now, region: getTimezoneForRegion(region) });
+  return getTotalSalesForRange(orders, region, start, end)
 }
 
 function getPreviousWeeklySales(orders: IOrder[], region: string): number {
@@ -56,10 +56,12 @@ function getPreviousWeeklySales(orders: IOrder[], region: string): number {
   }
   const now = new Date()
   const previousWeek = subWeeks(now, 1)
-  const startOfPreviousWeekIso = startOfWeek(previousWeek).toISOString()
-  const endOfPreviousWeekIso = endOfWeek(previousWeek).toISOString()
+  const startOfPreviousWeekIso = startOfWeek(previousWeek)
+  const endOfPreviousWeekIso = endOfWeek(previousWeek)
 
-  return getTotalSalesForRange(orders, region, startOfPreviousWeekIso, endOfPreviousWeekIso)
+  const { start, end } = getDateForRegion({ startDate: startOfPreviousWeekIso, endDate: endOfPreviousWeekIso, region: getTimezoneForRegion(region) });
+
+  return getTotalSalesForRange(orders, region, start, end)
 }
 
 function getWeekUniqueUsers(orders: IOrder[], region: string): number { // TODO region filtering
@@ -67,13 +69,14 @@ function getWeekUniqueUsers(orders: IOrder[], region: string): number { // TODO 
     return mockData.uniqueusers.totalamount
   }
   const now = new Date()
-  const startOfWeekIso = startOfWeek(now).toISOString()
-  const endOfWeekIso = endOfWeek(now).toISOString()
+  // const startOfWeekIso = startOfWeek(now).toISOString()
+  // const endOfWeekIso = endOfWeek(now).toISOString()
+  const { start, end } = getDateForRegion({ startDate: startOfWeek(now), endDate: endOfWeek(now), region: getTimezoneForRegion(region) });
 
   const userList = uniq(
     orders
       .filter((order) => {
-        return order.DateSubmitted > startOfWeekIso && order.DateSubmitted < endOfWeekIso
+        return order.DateSubmitted > start.toDateString() && order.DateSubmitted < end.toDateString()
       })
       .map((order) => order.FromUserID)
   )
@@ -81,19 +84,20 @@ function getWeekUniqueUsers(orders: IOrder[], region: string): number { // TODO 
   return userList.length
 }
 
-function getPreviousWeekUniqueUsers(orders: IOrder[]): number {
+function getPreviousWeekUniqueUsers(orders: IOrder[], region: string): number {  // TODO region filtering
   if (!appSettings.useRealDashboardData) {
     return mockData.uniqueusers.previoustotalamount
   }
   const now = new Date()
   const previousWeek = subWeeks(now, 1)
-  const startOfPreviousWeekIso = startOfWeek(previousWeek).toISOString()
-  const endOfPreviousWeekIso = endOfWeek(previousWeek).toISOString()
+  // const startOfPreviousWeekIso = startOfWeek(previousWeek).toISOString()
+  // const endOfPreviousWeekIso = endOfWeek(previousWeek).toISOString()
+  const { start, end } = getDateForRegion({ startDate: startOfWeek(previousWeek), endDate: endOfWeek(previousWeek), region: getTimezoneForRegion(region) });
 
   const userList = uniq(
     orders
       .filter((order) => {
-        return order.DateSubmitted > startOfPreviousWeekIso && order.DateSubmitted < endOfPreviousWeekIso
+        return order.DateSubmitted > start.toDateString() && order.DateSubmitted < end.toDateString()
       })
       .map((order) => order.FromUserID)
   )
@@ -101,7 +105,9 @@ function getPreviousWeekUniqueUsers(orders: IOrder[]): number {
   return userList.length
 }
 
-function getTotalSalesForRange(orders: IOrder[], region: string, start: string, end: string): number {
+function getTotalSalesForRange(orders: IOrder[], region: string, startDate: Date, endDate: Date): number {
+
+  const { start, end } = getDateForRegion({ startDate: startDate, endDate: endDate, region: getTimezoneForRegion(region) });
 
   const filteredRegionOrders = orders.filter((order) => {
     if (region) {
@@ -110,7 +116,7 @@ function getTotalSalesForRange(orders: IOrder[], region: string, start: string, 
   })
 
   const filteredOrders = filteredRegionOrders.filter((order) => {
-    return order.DateSubmitted > start && order.DateSubmitted < end
+    return order.DateSubmitted > start.toISOString() && order.DateSubmitted < end.toDateString()
   })
 
 
@@ -162,12 +168,13 @@ async function listAllOrdersSincePreviousWeek(region: string) {
   }
   const now = new Date()
   const previousWeek = subWeeks(now, 1)
-  const startOfPreviousWeek = startOfWeek(previousWeek).toISOString()
+  // const startOfPreviousWeek = startOfWeek(previousWeek).toISOString()
+  const { start, end } = getDateForRegion({ startDate: startOfWeek(previousWeek), endDate: startOfWeek(previousWeek), region: getTimezoneForRegion(region) });
 
   const filters = {
     sortBy: ["DateSubmitted" as "DateSubmitted"],
     filters: {
-      DateSubmitted: `>${startOfPreviousWeek}`,
+      DateSubmitted: `>${start.toDateString()}`,
       'xp.CatalogID': region
     },
     pageSize: 100
