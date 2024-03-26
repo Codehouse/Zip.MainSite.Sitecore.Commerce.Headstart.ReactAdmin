@@ -12,8 +12,7 @@ export interface DateRange {
 }
 
 export function getDateForRegion({ startDate, endDate, region }: DateForRegion): DateRange {
-    console.log({ startDate, endDate });
-
+    // console.log({ startDate, endDate });
     try {
         const targetTimeZone = region;
         const adjustedStartDate = zonedTimeToUtc(startDate, targetTimeZone);
