@@ -76,7 +76,7 @@ function getWeekUniqueUsers(orders: IOrder[], region: string): number { // TODO 
   const userList = uniq(
     orders
       .filter((order) => {
-        return order.DateSubmitted > start.toDateString() && order.DateSubmitted < end.toDateString()
+        return order.DateSubmitted > start.toISOString() && order.DateSubmitted < end.toISOString()
       })
       .map((order) => order.FromUserID)
   )
@@ -97,7 +97,7 @@ function getPreviousWeekUniqueUsers(orders: IOrder[], region: string): number { 
   const userList = uniq(
     orders
       .filter((order) => {
-        return order.DateSubmitted > start.toDateString() && order.DateSubmitted < end.toDateString()
+        return order.DateSubmitted > start.toISOString() && order.DateSubmitted < end.toISOString()
       })
       .map((order) => order.FromUserID)
   )
@@ -116,7 +116,7 @@ function getTotalSalesForRange(orders: IOrder[], region: string, startDate: Date
   })
 
   const filteredOrders = filteredRegionOrders.filter((order) => {
-    return order.DateSubmitted > start.toISOString() && order.DateSubmitted < end.toDateString()
+    return order.DateSubmitted > start.toISOString() && order.DateSubmitted < end.toISOString()
   })
 
 
@@ -174,7 +174,7 @@ async function listAllOrdersSincePreviousWeek(region: string) {
   const filters = {
     sortBy: ["DateSubmitted" as "DateSubmitted"],
     filters: {
-      DateSubmitted: `>${start.toDateString()}`,
+      DateSubmitted: `>${start.toISOString()}`,
       'xp.CatalogID': region
     },
     pageSize: 100
