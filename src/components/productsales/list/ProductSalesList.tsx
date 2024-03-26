@@ -12,6 +12,10 @@ import Cookies from "universal-cookie"
 import ocConfig from "config/ordercloud-config"
 import ProductCategoryFilter from "@/components/shared/OrderCloud/ProductCategoryFilter"
 import DashboardRegionFilter from "@/components/dashboard/dashboardRegionFilter"
+import {
+  fetchProductCategoryAssignmentsByCatalogId,
+} from "services/product-data-fetcher.service"
+import {ICategoryProductAssignment} from "types/ordercloud/ICategoryProductAssignment"
 
 interface LineItem {
   OrderID: string;
@@ -23,6 +27,7 @@ interface LineItem {
   LineSubtotal: number;
   Product: { 
     Name: string; 
+    ParentID: string;
     xp: { 
       Catalogue: string; 
       ItemCode: string;
@@ -41,6 +46,7 @@ const ProductSalesList: FC = () => {
   const [category, setCategory] = useState('')
   const token = cookies.get("ordercloud.access-token");
   const baseApiUrl = ocConfig.baseApiUrl;
+  const [categoryAssignments, setCategoryAssignments] = useState([] as ICategoryProductAssignment[])
   
   const handleRegionChange = (value) => {
     setRegion(value);
@@ -54,9 +60,15 @@ const ProductSalesList: FC = () => {
     return { ...lineItem };
   };
 
+  const getCatalogCategories = async (catalogId: string) => {
+    const categoryAssignments = await fetchProductCategoryAssignmentsByCatalogId(catalogId)
+    setCategoryAssignments(categoryAssignments)
+  }
+
   useEffect(() => {
     async function fetchFilters() {
         try {
+            getCatalogCategories(region);
 
             const response = await axios.get(`${baseApiUrl}/v1/lineitems/Incoming?Order.DateSubmitted=>=2024-01-01&Order.DateSubmitted=<=2024-03-24&pageSize=100&Order.xp.CatalogID=${region}`, { headers: {"Authorization" : `Bearer ${token}`}});
             const lineItemData: LineItem[] = response.data.Items.map((item: LineItem) => createData(item));
@@ -79,7 +91,16 @@ const ProductSalesList: FC = () => {
       </Flex>
     </VStack>
     {originalRows?.map((lineItem) => {
-      console.log(lineItem.Product.Name, lineItem.Product.xp.ItemCode, lineItem.Quantity, lineItem.LineTotal)
+      const category = categoryAssignments.map((assignment) => {
+        console.log(lineItem.Product.ParentID, assignment.ProductID, lineItem.Product.ParentID == assignment.ProductID)
+        if (lineItem.Product.ParentID == assignment.ProductID)
+        {
+          return assignment
+        }
+      }
+      )
+      //console.log(categoryAssignments)
+      console.log(lineItem.Product.Name, lineItem.Product.xp.ItemCode, lineItem.Quantity, lineItem.LineTotal, category)
       })}
     </>
   )

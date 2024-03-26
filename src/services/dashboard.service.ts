@@ -64,7 +64,7 @@ function getPreviousWeeklySales(orders: IOrder[], region: string): number {
   return getTotalSalesForRange(orders, region, start, end)
 }
 
-function getWeekUniqueUsers(orders: IOrder[], region: string): number { // TODO region filtering
+function getWeekUniqueUsers(orders: IOrder[], region: string): number {
   if (!appSettings.useRealDashboardData) {
     return mockData.uniqueusers.totalamount
   }
@@ -76,7 +76,7 @@ function getWeekUniqueUsers(orders: IOrder[], region: string): number { // TODO 
   const userList = uniq(
     orders
       .filter((order) => {
-        return order.DateSubmitted > start.toISOString() && order.DateSubmitted < end.toISOString()
+        return order.DateSubmitted > start.toISOString() && order.DateSubmitted < end.toISOString() && order?.xp?.CatalogID == region
       })
       .map((order) => order.FromUserID)
   )
@@ -84,7 +84,7 @@ function getWeekUniqueUsers(orders: IOrder[], region: string): number { // TODO 
   return userList.length
 }
 
-function getPreviousWeekUniqueUsers(orders: IOrder[], region: string): number {  // TODO region filtering
+function getPreviousWeekUniqueUsers(orders: IOrder[], region: string): number {
   if (!appSettings.useRealDashboardData) {
     return mockData.uniqueusers.previoustotalamount
   }
@@ -97,8 +97,9 @@ function getPreviousWeekUniqueUsers(orders: IOrder[], region: string): number { 
   const userList = uniq(
     orders
       .filter((order) => {
-        return order.DateSubmitted > start.toISOString() && order.DateSubmitted < end.toISOString()
+        return order.DateSubmitted > start.toISOString() && order.DateSubmitted < end.toISOString() && order?.xp?.CatalogID == region
       })
+
       .map((order) => order.FromUserID)
   )
 

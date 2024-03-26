@@ -11,6 +11,7 @@ import {
   Specs
 } from "ordercloud-javascript-sdk"
 import {ICategoryProductAssignment} from "types/ordercloud/ICategoryProductAssignment"
+import {ICustomCategoryProductAssignment} from "types/ordercloud/ICustomCategoryProductAssignment"
 import {IInventoryRecord} from "types/ordercloud/IInventoryRecord"
 import {IProduct} from "types/ordercloud/IProduct"
 import {ISpec} from "types/ordercloud/ISpec"
@@ -110,4 +111,13 @@ export async function fetchProductCategoryAssignments(catalogAssignments: Produc
   })
   const responses = await Promise.all(requests)
   return flatten(responses)
+}
+
+export async function fetchProductCategoryAssignmentsByCatalogId(catalogId: string) {
+
+  //const categoryList = Categories.List<ICategoryProductAssignment>(catalogId,  {pageSize: 100});
+
+  const categoriesProductAssignments = await Categories.ListProductAssignments<ICustomCategoryProductAssignment>(catalogId, {pageSize: 100})
+
+  return categoriesProductAssignments.Items
 }

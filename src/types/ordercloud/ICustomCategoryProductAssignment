@@ -1,0 +1,5 @@
+import {CategoryProductAssignment} from "ordercloud-javascript-sdk"
+
+export type ICustomCategoryProductAssignment = CategoryProductAssignment & {
+  CategoryName: string;
+}
